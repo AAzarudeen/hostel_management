@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "781902418314",
+    "project_id": "dummy-8a0cb",
+    "storage_bucket": "dummy-8a0cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781902418314:android:e03d22a2e02c95781a3873",
+        "android_client_info": {
+          "package_name": "com.example.hostel_client"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "781902418314-1gjb4f9teint4af8i5d3q76mnc1rcjuf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRKsD5QWx6O71Ly8yOUUqrLFD4jXCqHKM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "781902418314-1gjb4f9teint4af8i5d3q76mnc1rcjuf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
