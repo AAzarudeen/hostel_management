@@ -1,9 +1,13 @@
+import 'dart:html' as html;
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as Path;
+import 'package:image_picker_web/image_picker_web.dart';
 
 class CreateStudent extends StatefulWidget {
   const CreateStudent({super.key});
@@ -13,11 +17,12 @@ class CreateStudent extends StatefulWidget {
 }
 
 class _CreateStudentState extends State<CreateStudent> {
-  File? _image;
+  Uint8List? _imageData;
+  
   final picker = ImagePicker();
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController= TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _registerController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _blockController = TextEditingController();
@@ -27,13 +32,7 @@ class _CreateStudentState extends State<CreateStudent> {
 
   List<String> hostels = ['A', 'B', 'C', 'D'];
 
-  late String _selectedHostel = "A";
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  _createStudent() {
-    print("object");
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,69 +73,67 @@ class _CreateStudentState extends State<CreateStudent> {
           decoration: const InputDecoration(label: Text("Parent Phone number")),
         ),
         const SizedBox(height: 20.0),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _image == null
-                ? const Text('No image selected.')
-                : Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: FileImage(_image!),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: getImage,
-              child: const Text('Select Image'),
-            )]),
+        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          if (_imageData != null)
+              Image.memory(
+                _imageData!,
+                width: 100,
+                height: 100,
+              )
+            else
+              const Text('No image selected'),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _getImage,
+            child: const Text('Select Image'),
+          )
+        ]),
         const SizedBox(height: 20.0),
         ElevatedButton(
-            onPressed: () {
-              _createStudent();
-            },
+            onPressed: uploadFile,
             child: const Text("Create student")),
       ],
     ));
   }
 
   Future uploadFile() async {
+    print("hello");
+    final blob = html.Blob([_imageData], 'image/jpeg');
+    final file = html.File([blob], 'image.jpg');
     Reference storageReference = FirebaseStorage.instance
         .ref()
-        .child('images/${Path.basename(_image!.path)}');
-    UploadTask uploadTask = storageReference.putFile(_image!);
+        .child('students/2022179017.jpg');
+    UploadTask uploadTask = storageReference.putBlob(file);
+    print("file updloaded");
     await uploadTask.whenComplete(() => {
-      _firestore.collection('users').add({
-      'name' : _nameController.text,
-      'register' :_registerController.text,
-      'email' : _emailController.text,
-      'number' : _registerController.text,
-      'block' : _blockController.text,
-      'room_number' : _roomNumberController.text,
-      'parent_email_id' : _emailController.text,
-      'parent_number' : _parentNumberController.text
-    }).then((value) {
-      print('Data added successfully!');
-    }).catchError((error) {
-      print('Failed to add data: $error');
-    })
-    }
-    );
+            _firestore.collection('students').doc("2022179017").set({
+            'name': "Azarudeen",
+            'register': "2022179017",
+            'email': "2022179017@student.annauniv.edu",
+            'number': "8667288997",
+            'block': "thazam",
+            'room_number': "66",
+            'parent_email_id': "azarcrackzz@gmail.com",
+            'parent_number': "9789291871"
+          }).then((value) {
+            FirebaseAuth auth = FirebaseAuth.instance;
+            auth.createUserWithEmailAndPassword(email: "2022179017@student.annauniv.edu", password: "2022179017");
+            print('Data added successfully!');
+            auth.createUserWithEmailAndPassword(email: "azarcrackzz@gmail.com", password: "9789291871");
+            print("data uploaded");
+          }).catchError((error) {
+            print('Failed to add data: $error');
+          })
+        });
+        print("hello end");
   }
 
-  Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
+  void _getImage() async {
+    final imageData = await ImagePickerWeb.getImageAsBytes();
+    if (imageData != null) {
+      setState(() {
+        _imageData = Uint8List.fromList(imageData);
+      });
+    }
   }
 }

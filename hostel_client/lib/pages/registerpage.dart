@@ -66,7 +66,7 @@ class _RegisterPageState extends State<Registerpage> {
         children: [
           TextField(
             controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Email'),
+            decoration: const InputDecoration(labelText: 'Name'),
           ),
           TextField(
             controller: _emailController,

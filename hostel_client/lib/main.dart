@@ -31,7 +31,7 @@ class WebPages extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(),
+      home: const LoginPage(),
       routes: {
         '/login':(context) => const LoginPage(),
         '/register':(context) => const Registerpage(),
