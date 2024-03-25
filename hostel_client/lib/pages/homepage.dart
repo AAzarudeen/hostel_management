@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_client/pages/createrc.dart';
 import 'package:hostel_client/pages/createstudent.dart';
 import 'package:hostel_client/pages/loginpage.dart';
+import 'package:hostel_client/pages/viewStudents.dart';
 
 class MyHomePage extends StatefulWidget {
   
@@ -41,27 +43,22 @@ class _MyHomePageState extends State<MyHomePage> {
                 DashboardBox(
                   title: 'Create Student',
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const CreateStudent()),
-                    );
+                    navigateToPage(context,const CreateStudent());
                   },
                 ),
                 const SizedBox(height: 20),
                 DashboardBox(
                   title: 'View Students',
-                  onTap: () {},
-                ),
-                const SizedBox(height: 20),
-                DashboardBox(
-                  title: 'Create Parent',
-                  onTap: () {},
+                  onTap: () {
+                    navigateToPage(context,const ViewStudent());
+                  },
                 ),
                 const SizedBox(height: 20),
                 DashboardBox(
                   title: 'Create RC',
-                  onTap: () {},
+                  onTap: () {
+                    navigateToPage(context,const CreateRC());
+                  },
                 ),
                 const SizedBox(height: 20),
                 DashboardBox(
@@ -73,6 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ));
   }
+  void navigateToPage(BuildContext context, Widget page) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => page),
+  );
+}
 }
 
 class DashboardBox extends StatelessWidget {

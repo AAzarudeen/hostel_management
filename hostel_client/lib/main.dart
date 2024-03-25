@@ -21,6 +21,7 @@ Future main() async{
     runApp(const WebPages());
   } else {
     await Firebase.initializeApp();
+    runApp(const LoginPage());
   }
 }
 

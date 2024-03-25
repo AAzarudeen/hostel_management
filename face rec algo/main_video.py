@@ -13,7 +13,7 @@ import firebase_admin
 # ref = db.reference("students/")
 
 sfr = SimpleFacerec()
-sfr.load_encoding_images("images/")
+sfr.load_encoding_images("face rec algo/images/")
 
 cap = cv2.VideoCapture(0)
 
