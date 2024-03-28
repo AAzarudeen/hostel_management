@@ -1,16 +1,32 @@
+import os
 import cv2
 from simple_facerec import SimpleFacerec
 import firebase_admin
-# from firebase_admin import credentials
-# from firebase_admin import db
+from firebase_admin import credentials
+from firebase_admin import db
+from firebase_admin import storage
 
-# cred = credentials.Certificate(".\dummy-8a0cb-firebase-adminsdk-cvu6h-cd5cb8f3d7.json")
+cred = credentials.Certificate("./dummy-8a0cb-firebase-adminsdk-cvu6h-cd5cb8f3d7.json")
 
-# firebase_admin.initialize_app(cred, {
-#     "databaseURL" : "https://dummy-8a0cb-default-rtdb.asia-southeast1.firebasedatabase.app/"
-# })
+firebase_admin.initialize_app(cred, {
+    "databaseURL" : "https://dummy-8a0cb-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    'storageBucket': 'dummy-8a0cb.appspot.com'
+})
 
-# ref = db.reference("students/")
+ref = db.reference("students/")
+
+bucket = storage.bucket()
+
+def fetch_images_from_storage(folder_path, local_directory):
+    blobs = bucket.list_blobs(prefix=folder_path)
+    for blob in blobs:
+        if blob.name.endswith('.jpg') or blob.name.endswith('.jpg'):  # Filter for specific image file types
+            destination_file_path = os.path.join(local_directory, os.path.basename(blob.name))
+            blob.download_to_filename(destination_file_path)
+            print(f"Downloaded {blob.name} to {destination_file_path}")
+
+# Example usage:
+fetch_images_from_storage('students/', 'local_images/')  # Replace 'images/' with your Firebase Storage folder path and 'local_images/' with your local directory path
 
 sfr = SimpleFacerec()
 sfr.load_encoding_images("face rec algo/images/")

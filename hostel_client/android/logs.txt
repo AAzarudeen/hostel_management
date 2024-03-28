@@ -1,0 +1,19 @@
+
+Welcome to Gradle 7.6.3!
+
+Here are the highlights of this release:
+ - Added support for Java 19.
+ - Introduced `--rerun` flag for individual task rerun.
+ - Improved dependency block for test suites to be strongly typed.
+ - Added a pluggable system for Java toolchains provisioning.
+
+For more details see https://docs.gradle.org/7.6.3/release-notes.html
+
+Starting a Gradle Daemon, 1 incompatible Daemon could not be reused, use --status for details
+> Task :gradle:compileJava NO-SOURCE
+> Task :gradle:compileGroovy
+> Task :gradle:pluginDescriptors UP-TO-DATE
+> Task :gradle:processResources UP-TO-DATE
+> Task :gradle:classes
+> Task :gradle:jar
+4 actionable tasks: 2 executed, 2 up-to-date

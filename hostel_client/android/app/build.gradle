@@ -25,7 +25,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.hostel_client"
-    compileSdk flutter.compileSdkVersion
+
+    compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
