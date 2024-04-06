@@ -35,7 +35,7 @@ class _ViewStudentState extends State<ViewStudent> {
                   fit: BoxFit.cover,
                 ),
                 title: Text(data['name']),
-                subtitle: Text(data['description'] ??
+                subtitle: Text(data['register'] ??
                     ''), // Assuming 'description' is a field in your document
                 onTap: () {
                   // Add onTap logic here

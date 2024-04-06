@@ -26,10 +26,10 @@ def fetch_images_from_storage(folder_path, local_directory):
             print(f"Downloaded {blob.name} to {destination_file_path}")
 
 # Example usage:
-fetch_images_from_storage('students/', 'local_images/')  # Replace 'images/' with your Firebase Storage folder path and 'local_images/' with your local directory path
+fetch_images_from_storage('students/', 'images/local_images/')  # Replace 'images/' with your Firebase Storage folder path and 'local_images/' with your local directory path
 
 sfr = SimpleFacerec()
-sfr.load_encoding_images("face rec algo/images/")
+sfr.load_encoding_images("images/local_images")
 
 cap = cv2.VideoCapture(0)
 

@@ -25,12 +25,12 @@ class SimpleFacerec:
             basename = os.path.basename(img_path)
             (filename, ext) = os.path.splitext(basename)
             # Get encoding
-            img_encoding = face_recognition.face_encodings(rgb_img,model="large")[0]
+            img_encoding = face_recognition.face_encodings(rgb_img,model="large")
             # Store file name and file encoding
             self.known_face_encodings.append(img_encoding)
             self.known_face_names.append(filename)
         print("Encoding images loaded")
-        print(self.known_face_encodings[0])
+        # print(self.known_face_encodings[0])
 
     def detect_known_faces(self, frame):
         small_frame = cv2.resize(frame, (0, 0), fx=self.frame_resizing, fy=self.frame_resizing)

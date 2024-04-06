@@ -1,9 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_client/pages/android_app/app_login.dart';
+import 'package:hostel_client/pages/android_app/mappage.dart';
 import 'package:hostel_client/pages/homepage.dart';
 import 'package:hostel_client/pages/loginpage.dart';
 import 'package:hostel_client/pages/registerpage.dart';
+
+import 'firebase_options.dart';
 
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,10 +24,25 @@ Future main() async{
     );
     runApp(const WebPages());
   } else {
-    await Firebase.initializeApp();
-    runApp(const LoginPage());
+    print("Hello");
+    await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
+    runApp(const AppPages());
   }
 }
+class AppPages extends StatelessWidget {
+  const AppPages({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: AppLoginPage(),
+    );
+  }
+}
+
 
 class WebPages extends StatelessWidget {
   const WebPages({super.key});
@@ -35,7 +54,7 @@ class WebPages extends StatelessWidget {
       home: const LoginPage(),
       routes: {
         '/login':(context) => const LoginPage(),
-        '/register':(context) => const Registerpage(),
+        // '/register':(context) => const Registerpage(),
         '/homepage':(context) => const MyHomePage()
       },
     );

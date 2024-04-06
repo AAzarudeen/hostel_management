@@ -1,81 +1,75 @@
-// import 'package:flutter/material.dart';
-// import 'package:geolocator/geolocator.dart';
-// import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
-// void main() {
-//   runApp(MyApp());
-// }
+class MapPage extends StatefulWidget {
+  const MapPage({super.key});
 
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Location Tracker',
-//       home: LocationTracker(),
-//     );
-//   }
-// }
+  @override
+  _MapPageState createState() => _MapPageState();
+}
 
-// class LocationTracker extends StatefulWidget {
-//   @override
-//   _LocationTrackerState createState() => _LocationTrackerState();
-// }
+class _MapPageState extends State<MapPage> {
+  // DatabaseReference _locationRef =
+  // FirebaseDatabase.instance.reference().child('locations');
 
-// class _LocationTrackerState extends State<LocationTracker> {
-//   DatabaseReference _locationRef =
-//   FirebaseDatabase.instance.reference().child('locations');
+  @override
+  void initState() {
+    super.initState();
+    _sendLocationToFirebase();
+  }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _sendLocationToFirebase();
-//   }
+  Future<void> _sendLocationToFirebase() async {
+    Position position = await _determinePosition();
+    if (position != null) {
+      // _locationRef.push().set({
+      //   'latitude': position.latitude,
+      //   'longitude': position.longitude,
+      //   'timestamp': ServerValue.timestamp,
+      // });
+    }
+  }
 
-//   Future<void> _sendLocationToFirebase() async {
-//     Position position = await _determinePosition();
-//     if (position != null) {
-//       _locationRef.push().set({
-//         'latitude': position.latitude,
-//         'longitude': position.longitude,
-//         'timestamp': ServerValue.timestamp,
-//       });
-//     }
-//   }
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
 
-//   Future<Position> _determinePosition() async {
-//     bool serviceEnabled;
-//     LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
 
-//     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-//     if (!serviceEnabled) {
-//       return Future.error('Location services are disabled.');
-//     }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied.');
+      }
+    }
 
-//     permission = await Geolocator.checkPermission();
-//     if (permission == LocationPermission.denied) {
-//       permission = await Geolocator.requestPermission();
-//       if (permission == LocationPermission.denied) {
-//         return Future.error('Location permissions are denied.');
-//       }
-//     }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    print(await Geolocator.getCurrentPosition());
 
-//     if (permission == LocationPermission.deniedForever) {
-//       return Future.error(
-//           'Location permissions are permanently denied, we cannot request permissions.');
-//     }
+    return await Geolocator.getCurrentPosition();
+  }
 
-//     return await Geolocator.getCurrentPosition();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Location Tracker'),
-//       ),
-//       body: Center(
-//         child: Text('Sending location to Firebase...'),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return FlutterMap(
+      options: MapOptions(
+        initialCenter: LatLng(51.509364, -0.128928),
+        initialZoom: 9.2,
+      ),
+      children: [
+        TileLayer(
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+          userAgentPackageName: 'com.example.app',
+        ),
+      ],
+    );
+  }
+  }
