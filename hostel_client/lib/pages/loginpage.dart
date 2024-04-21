@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hostel_client/pages/android_app/mappage.dart';
+import 'package:hostel_client/common/UserProvider.dart';
+import 'package:hostel_client/common/toast.dart';
 import 'package:hostel_client/pages/homepage.dart';
 import 'package:hostel_client/pages/registerpage.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,17 +31,18 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _signInWithEmailAndPassword(context) async {
     if(!validateInputs()){
-      // showToast(message: "Please fill all fields");
+      showToast(message: "Please fill all fields", title: 'Error',context: context);
       return;
     }
     try {
       final UserCredential userCredential =
           await _auth.signInWithEmailAndPassword(
-        email: "azarudeenasraffali@gmail.com",
-        password: "password",
+        email: _emailController.text,
+        password: _passwordController.text,
       );
       final User? user = userCredential.user;
-      print('Signed in: ${user?.uid}');
+      Provider.of<UserProvider>(context, listen: false).setCurrentUser(user!);
+      print('Signed in: ${user.uid}');
       Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const MyHomePage()),

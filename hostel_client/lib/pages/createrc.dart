@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -59,30 +60,16 @@ class _CreateRcState extends State<CreateRC> {
   }
 
   void _saveResident() async {
-    final String name = _nameController.text;
-    final String block = _blockController.text;
-    final String email = _emailController.text;
-    final String phoneNumber = _phoneController.text;
-
-    try {
-      await _firestore.collection('rc').add({
-        'name': name,
-        'block': block,
-        'email': email,
-        'phone': phoneNumber,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Resident saved successfully')),
-      );
-      // Clear the text fields after saving
-      _nameController.clear();
-      _blockController.clear();
-      _emailController.clear();
-      _phoneController.clear();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save resident: $e')),
-      );
+    _firestore.collection('RC').doc(_emailController.text).set({
+      'name': _nameController.text,
+      'email': _emailController.text,
+      'number': _phoneController.text,
+      'block': _blockController.text,
+    }).then((value) {
+      FirebaseAuth auth = FirebaseAuth.instance;
+      auth.createUserWithEmailAndPassword(
+          email: _emailController.text, password: _phoneController.text);
+      print('Data added successfully!');
+});
     }
-  }
 }

@@ -61,7 +61,7 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return FlutterMap(
       options: MapOptions(
-        initialCenter: LatLng(51.509364, -0.128928),
+        initialCenter: LatLng(37.7749, -122.4194),
         initialZoom: 9.2,
       ),
       children: [
@@ -69,6 +69,19 @@ class _MapPageState extends State<MapPage> {
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'com.example.app',
         ),
+        MarkerLayer(markers:  [
+        Marker(
+        width: 40.0,
+          height: 40.0,
+    point: const LatLng(37.7749, -122.4194), // coordinates for marker
+    child: Container(
+      child: Icon(
+        Icons.location_on,
+        color: Colors.red,
+        size: 40.0,
+      ),
+    ),
+    ),])
       ],
     );
   }

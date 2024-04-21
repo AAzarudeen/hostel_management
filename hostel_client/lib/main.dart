@@ -1,15 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_client/pages/android_app/app_login.dart';
-import 'package:hostel_client/pages/android_app/mappage.dart';
 import 'package:hostel_client/pages/homepage.dart';
 import 'package:hostel_client/pages/loginpage.dart';
-import 'package:hostel_client/pages/registerpage.dart';
-
+import 'package:provider/provider.dart';
+import 'common/UserProvider.dart';
 import 'firebase_options.dart';
 
-Future main() async{
+Future main() async {
+  // await FirebaseApi().initNotifications();
   WidgetsFlutterBinding.ensureInitialized();
   if (kIsWeb) {
     await Firebase.initializeApp(
@@ -26,37 +27,62 @@ Future main() async{
   } else {
     print("Hello");
     await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
-    runApp(const AppPages());
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await FirebaseMessaging.instance.setAutoInitEnabled(true);
+    await FirebaseMessaging.instance.subscribeToTopic("2022179017");
+    runApp(AppPages());
   }
 }
-class AppPages extends StatelessWidget {
-  const AppPages({super.key});
+
+class AppPages extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => AppPagesState();
+}
+
+class AppPagesState extends State<AppPages> {
+  void _handleMessage(RemoteMessage message) {
+    print(message.data);
+  }
+
+  Future<void> setupInteractedMessage() async {
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setupInteractedMessage();
+  }
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AppLoginPage(),
-    );
+          debugShowCheckedModeBanner: false,
+          home: AppLoginPage(),
+        );
   }
 }
-
 
 class WebPages extends StatelessWidget {
   const WebPages({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return  ChangeNotifierProvider(
+        create: (context) => UserProvider(),
+    child:MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const LoginPage(),
       routes: {
-        '/login':(context) => const LoginPage(),
-        // '/register':(context) => const Registerpage(),
-        '/homepage':(context) => const MyHomePage()
+        '/login': (context) => const LoginPage(),
+        '/homepage': (context) => const MyHomePage()
       },
-    );
+    ),);
   }
 }

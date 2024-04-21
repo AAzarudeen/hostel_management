@@ -121,30 +121,30 @@ class _CreateStudentState extends State<CreateStudent> {
   Future uploadFile() async {
     print("hello");
     Reference storageReference =
-        FirebaseStorage.instance.ref().child('students/2022179017.jpg');
+        FirebaseStorage.instance.ref().child('students/${_registerController.text}.jpg');
     print(_imageData);
     UploadTask uploadTask = storageReference.putData(
         _imageData!, SettableMetadata(contentType: 'image/jpeg'));
     print("file uploaded");
     TaskSnapshot snapshot = await uploadTask;
     String downloadURL = await snapshot.ref.getDownloadURL();
-    _firestore.collection('students').doc("2022179017").set({
-      'name': "Azarudeen",
-      'register': "2022179017",
-      'email': "2022179017@student.annauniv.edu",
-      'number': "8667288997",
-      'block': "thazam",
-      'room_number': "66",
-      'parent_email_id': "azarcrackzz@gmail.com",
-      'parent_number': "9789291871",
+    _firestore.collection('students').doc(_registerController.text).set({
+      'name': _nameController.text,
+      'register': _registerController.text,
+      'email': _emailController.text,
+      'number': _phoneController.text,
+      'block': _blockController.text,
+      'room_number': _roomNumberController.text,
+      'parent_email_id': _parentEmailController.text,
+      'parent_number': _parentNumberController.text,
       'image_url': downloadURL
     }).then((value) {
       FirebaseAuth auth = FirebaseAuth.instance;
       auth.createUserWithEmailAndPassword(
-          email: "2022179017@student.annauniv.edu", password: "2022179017");
+          email: _emailController.text, password: _registerController.text);
       print('Data added successfully!');
       auth.createUserWithEmailAndPassword(
-          email: "azarcrackzz@gmail.com", password: "9789291871");
+          email: _parentEmailController.text, password: _parentNumberController.text);
       print("data uploaded");
     }).catchError((error) {
       print('Failed to add data: $error');

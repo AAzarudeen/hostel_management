@@ -5,6 +5,7 @@ import 'package:hostel_client/common/navigate.dart';
 import 'package:hostel_client/pages/createrc.dart';
 import 'package:hostel_client/pages/createstudent.dart';
 import 'package:hostel_client/pages/loginpage.dart';
+import 'package:hostel_client/pages/setnotification.dart';
 import 'package:hostel_client/pages/viewStudents.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -65,7 +66,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 20),
                 DashboardBox(
                   title: 'Add Notification',
-                  onTap: () {},
+                  onTap: () {
+                    navigateToPage(context,const Setnotification());
+                  },
                 ),
               ],
             ),

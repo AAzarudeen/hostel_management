@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:hostel_client/pages/android_app/firebase_service.dart';
 import 'package:hostel_client/pages/android_app/mainpage_parent.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AppLoginPage extends StatefulWidget {
   const AppLoginPage({super.key});
@@ -12,12 +15,79 @@ class AppLoginPage extends StatefulWidget {
 
 class _AppLoginPageState extends State<AppLoginPage> {
 
- bool passwordVisible = false;
-    @override
-    void initState(){
-      super.initState();
-      passwordVisible=true;
+  bool passwordVisible = false;
+
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+
+  void _saveDeviceToken(String uid,String userType) async {
+
+    String? fcmToken = await _fcm.getToken();
+
+    // Save it to Firestore
+    if (fcmToken != null) {
+      var tokens = _db
+          .collection('users')
+          .doc(uid)
+          .collection('tokens')
+          .doc(fcmToken);
+
+      await tokens.set({
+        'token': fcmToken,
+        'createdAt': FieldValue.serverTimestamp(),
+      }).whenComplete((){
+        if(userType == "student"){
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const FirestoreService())
+          );
+        }
+        if(userType == "parent"){
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainPageParent()),
+          );
+        }
+      });
     }
+  }
+//   _fcm.configure(
+//   onMessage: (Map<String, dynamic> message) async {
+//   print("onMessage: $message");
+//   showDialog(
+//   context: context,
+//   builder: (context) => AlertDialog(
+//   content: ListTile(
+//   title: Text(message['notification']['title']),
+//   subtitle: Text(message['notification']['body']),
+//   ),
+//   actions: <Widget>[
+//   FlatButton(
+//   child: Text('Ok'),
+//   onPressed: () => Navigator.of(context).pop(),
+//   ),
+//   ],
+//   ),
+//   );
+// },
+// onLaunch: (Map<String, dynamic> message) async {
+// print("onLaunch: $message");
+//
+// },
+// onResume: (Map<String, dynamic> message) async {
+// print("onResume: $message");
+//
+// },
+// );
+
+  @override
+  void initState() {
+    super.initState();
+    passwordVisible=true;
+    requestPermissions();
+  }
+
+
 
   bool validateInputs(){
     if (_passwordController.text.isEmpty || _emailController.text.isEmpty) {
@@ -29,20 +99,12 @@ class _AppLoginPageState extends State<AppLoginPage> {
     try {
       final UserCredential userCredential =
           await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: "2022179017@student.annauniv.edu",
+        password: "2022179017",
       );
       final User? user = userCredential.user;
       print('Signed in: ${user?.uid}');
-      if(userType == "student"){
-
-      }
-      if(userType == "parent"){
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainPageParent()),
-        );
-      }
+      _saveDeviceToken(user!.uid,userType);
     } catch (e) {
       print('Error signing in: $e');
     }
@@ -96,12 +158,18 @@ class _AppLoginPageState extends State<AppLoginPage> {
     );
   }
 
+  Future<void> requestPermissions() async {
+    Permission.ignoreBatteryOptimizations.request();
+    Permission.ignoreBatteryOptimizations.request();
+    Permission.scheduleExactAlarm.request();
+  }
+
  Future<String> checkEmailType(String email,context) async {
    String userType = "unknown";
    final FirebaseFirestore firestore = FirebaseFirestore.instance;
    QuerySnapshot<Map<String, dynamic>> studentSnapshot = await firestore
        .collection('students')
-       .where('email', isEqualTo: email)
+       .where('email', isEqualTo: "2022179017@student.annauniv.edu")
        .limit(1)
        .get();
    QuerySnapshot<Map<String, dynamic>> parentSnapshot = await firestore

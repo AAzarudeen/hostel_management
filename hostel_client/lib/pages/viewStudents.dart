@@ -28,11 +28,8 @@ class _ViewStudentState extends State<ViewStudent> {
               var doc = snapshot.data!.docs[index];
               Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
               return ListTile(
-                leading: Image.network(
-                  data['image_url'],
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.cover,
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(data['image_url']), // Load image from URL
                 ),
                 title: Text(data['name']),
                 subtitle: Text(data['register'] ??
@@ -52,7 +49,7 @@ class _ViewStudentState extends State<ViewStudent> {
                         'room_number': data['room_number'],
                         'parent_email_id': data['parent_email_id'],
                         'parent_number': data['parent_number'],
-                        // 'image_data' : data['']
+                        'image_data' : data['image_url']
                       }),
                     ),
                   );
