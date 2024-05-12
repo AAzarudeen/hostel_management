@@ -12,15 +12,16 @@ class DashboardBox extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 200,
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.black87,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Center(
           child: Text(
             title,
+            textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 20,

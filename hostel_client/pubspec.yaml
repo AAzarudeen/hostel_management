@@ -24,6 +24,7 @@ dependencies:
   googleapis_auth: ^1.6.0
   flutter_background_service: ^5.0.5
   permission_handler: ^11.3.1
+  time: ^2.1.4
 
 dev_dependencies:
   flutter_test:

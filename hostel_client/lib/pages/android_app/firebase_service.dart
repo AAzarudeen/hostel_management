@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class FirestoreService extends StatefulWidget {
   const FirestoreService({super.key});
@@ -21,31 +20,24 @@ class _FirestoreServiceState extends State<FirestoreService> {
   @override
   void initState() {
     super.initState();
-    // FirebaseFirestore.instance.collection('status')
-    //     .doc('status_doc')
-    //     .snapshots()
-    //     .listen((DocumentSnapshot snapshot) {
-    //   setState(() {
-    //     // status = snapshot.data()?['status'];
-    //   });
-    // });
-    // requestPermissions();
-    startBackgroundService();
-    // Start the background service
-    // FlutterBackgroundService().startService();
-
-    // Schedule the periodic task
-    // FlutterBackgroundService().invoke();
+    FirebaseFirestore.instance.collection('status')
+        .doc('status_doc')
+        .snapshots()
+        .listen((DocumentSnapshot snapshot) {
+      setState(() {
+        // status = snapshot.data()?['status'];
+      });
+    });
+    if (DateTime.now().hour >= 21 || DateTime.now().hour < 5) {
+      startBackgroundService();
+    }
   }
   onStart() {
-    Timer.periodic(Duration(seconds: 10), (timer) {
-      if (status) {
-        timer.cancel();
-        return;
+
+      Timer.periodic(Duration(seconds: 10), (timer) {
+        updateLocation(timer);
+      });
       }
-      updateLocation();
-    });
-  }
 
   void startBackgroundService() async {
     print("hi");
@@ -70,16 +62,24 @@ class _FirestoreServiceState extends State<FirestoreService> {
   }
 
 
-  void updateLocation() {
-    // Implement location update logic here
-    // For example:
-    // FirebaseFirestore.instance.collection('locations').doc('user_location').set(
-    //     {
-    //       'latitude': 0.0,
-    //       'longitude': 0.0,
-    //       // Add more location data as needed
-    //     });
-    print("object");
+  void updateLocation(timer) async{
+    try {
+      if (DateTime.now().hour >= 21 || DateTime.now().hour < 5) {
+        await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high).then((value) =>
+            FirebaseFirestore.instance.collection('locations').doc('user_location').set(
+                {
+                  'latitude': value.latitude,
+                  'longitude': value.longitude,
+                  // Add more location data as needed
+                })
+        );
+      }else{
+        timer.cancel();
+      }
+    } catch (e) {
+      print('Error getting location: $e');
+    }
   }
 
   @override

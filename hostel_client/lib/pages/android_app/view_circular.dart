@@ -1,22 +1,31 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hostel_client/pages/android_app/ViewDetail.dart';
-import 'package:hostel_client/pages/createstudent.dart';
+import 'dart:typed_data';
 
-class ViewStudent extends StatefulWidget {
-  const ViewStudent({super.key});
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:hostel_client/common/myWigdets.dart';
+import 'package:image_picker/image_picker.dart';
+
+class ViewCicular extends StatefulWidget {
+  const ViewCicular({super.key});
 
   @override
-  State<ViewStudent> createState() => _ViewStudentState();
+  State<ViewCicular> createState() => _ViewCicularState();
 }
 
-class _ViewStudentState extends State<ViewStudent> {
+class _ViewCicularState extends State<ViewCicular> {
+  final picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Student List"),
+          title: const Text("Circular"),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -32,7 +41,7 @@ class _ViewStudentState extends State<ViewStudent> {
           ),
           child: StreamBuilder(
             stream:
-                FirebaseFirestore.instance.collection('students').snapshots(),
+                FirebaseFirestore.instance.collection('circulars').snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -64,44 +73,11 @@ class _ViewStudentState extends State<ViewStudent> {
                                               CrossAxisAlignment.stretch,
                                           children: [
                                             ListTile(
-                                              leading: CircleAvatar(
-                                                backgroundImage: NetworkImage(data[
-                                                    'image_url']), // Load image from URL
-                                              ),
-                                              title: Text(data['name']),
-                                              subtitle: Text(data['register'] ??
+                                              title: Text(data['title']),
+                                              subtitle: Text(data['description'] ??
                                                   ''), // Assuming 'description' is a field in your document
                                               onTap: () {
                                                 // Add onTap logic here
-                                                if (kIsWeb) {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          CreateStudent(
-                                                              studentDetails: {
-                                                            'name':
-                                                                data['name'],
-                                                            'register': data[
-                                                                'register'],
-                                                            'number':
-                                                                data['number'],
-                                                            'email':
-                                                                data['email'],
-                                                            'block':
-                                                                data['block'],
-                                                            'room_number': data[
-                                                                'room_number'],
-                                                            'parent_email_id': data[
-                                                                'parent_email_id'],
-                                                            'parent_number': data[
-                                                                'parent_number'],
-                                                            'image_data': data[
-                                                                'image_url']
-                                                          }),
-                                                    ),
-                                                  );
-                                                } else {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -111,7 +87,6 @@ class _ViewStudentState extends State<ViewStudent> {
                                                     ),
                                                   );
                                                 }
-                                              },
                                             )
                                           ]))))));
                 },

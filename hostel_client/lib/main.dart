@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -62,10 +63,12 @@ class AppPagesState extends State<AppPages> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return ChangeNotifierProvider(
+        create: (context) => UserProvider(),
+        child: const MaterialApp(
           debugShowCheckedModeBanner: false,
           home: AppLoginPage(),
-        );
+        ));
   }
 }
 
@@ -74,15 +77,16 @@ class WebPages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  ChangeNotifierProvider(
-        create: (context) => UserProvider(),
-    child:MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
-      routes: {
-        '/login': (context) => const LoginPage(),
-        '/homepage': (context) => const MyHomePage()
-      },
-    ),);
+    return ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: const LoginPage(),
+        routes: {
+          '/login': (context) => const LoginPage(),
+          '/homepage': (context) => const MyHomePage()
+        },
+      ),
+    );
   }
 }
