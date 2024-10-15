@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hostel_client/common/dashboardBox.dart';
 import 'package:hostel_client/common/navigate.dart';
 import 'package:hostel_client/pages/android_app/mappage.dart';
+import 'package:hostel_client/pages/viewStudents.dart';
 
 class MainPageRc extends StatefulWidget{
   const MainPageRc({super.key});
@@ -24,7 +25,7 @@ class MainPageRcState extends State<MainPageRc>{
                 DashboardBox(
                   title: 'View Student List',
                   onTap: () {
-                    navigateToPage(context,const MapPage());
+                    navigateToPage(context,const ViewStudent());
                   },
                 ),
                 const SizedBox(height: 20),

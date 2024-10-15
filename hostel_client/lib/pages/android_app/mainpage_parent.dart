@@ -7,10 +7,13 @@ import 'package:hostel_client/common/toast.dart';
 import 'package:hostel_client/pages/android_app/app_login.dart';
 import 'package:hostel_client/pages/android_app/mappage.dart';
 import 'package:hostel_client/pages/android_app/mess_reduction.dart';
+import 'package:hostel_client/pages/android_app/student_attendance.dart';
+import 'package:hostel_client/pages/android_app/view_attendance.dart';
 import 'package:hostel_client/pages/android_app/view_circular.dart';
 
 class MainPageParent extends StatefulWidget{
-  const MainPageParent({super.key});
+  final Map<String, dynamic>? student_details;
+  const MainPageParent({super.key, this.student_details});
 
   @override
   State<StatefulWidget> createState() => MainPageParentState();
@@ -59,22 +62,19 @@ class MainPageParentState extends State<MainPageParent>{
                 DashboardBox(
                   title: 'View ward Location',
                   onTap: () {
-                    DateTime now = DateTime.now();
-                    int hour = now.hour;
-                    if (hour >= 21 && hour < 5) {
-                      setState(() {
-                        navigateToPage(context,const MapPage());
-                      });
-                    }else{
-                      showToast(title: "Not available", message: "Only from 9 pm to 5 am you can see the current location of your ward", context: context);
-                    }
+                    print(isNightTime());
+                    // if (isNightTime()) {
+                        navigateToPage(context, MapPage(studentRoll: widget.student_details?['register']));
+                    // }else{
+                    //   showToast(title: "Not available", message: "Only from 9 pm to 5 am you can see the current location of your ward", context: context);
+                    // }
                   },
                 ),
                 const SizedBox(height: 20),
                 DashboardBox(
                   title: 'View Attendance',
                   onTap: () {
-                    navigateToPage(context,const MessReduction());
+                    navigateToPage(context, ViewStudentAttendance(rollNumber: widget.student_details?['register']));
                   },
                 ),
                 const SizedBox(height: 20),
@@ -90,5 +90,29 @@ class MainPageParentState extends State<MainPageParent>{
           ),
         ))));
   }
+  bool isNightTime() {
+    final currentTime = DateTime.now().toLocal();
+    final startNightTime = TimeOfDay(hour: 21, minute: 0); // 9 PM
+    final endNightTime = TimeOfDay(hour: 5, minute: 0); // 5 AM
 
+    final currentHour = currentTime.hour;
+    final currentMinute = currentTime.minute;
+
+    final startNightDateTime = DateTime(currentTime.year, currentTime.month, currentTime.day, startNightTime.hour, startNightTime.minute);
+    final endNightDateTime = DateTime(currentTime.year, currentTime.month, currentTime.day, endNightTime.hour, endNightTime.minute);
+
+    // Check if current time is between 9 PM and midnight (inclusive)
+    if (currentHour >= startNightTime.hour && currentHour < 24) {
+      return true;
+    }
+    // Check if current time is between midnight and 5 AM (inclusive)
+    else if (currentHour >= 0 && currentHour < endNightTime.hour) {
+      return true;
+    }
+    // Check if current time is exactly midnight
+    else if (currentTime == startNightDateTime || currentTime == endNightDateTime) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hostel_client/common/dashboardBox.dart';
 import 'package:hostel_client/common/navigate.dart';
 import 'package:hostel_client/pages/android_app/app_login.dart';
+import 'package:hostel_client/pages/android_app/view_attendance.dart';
 import 'package:hostel_client/pages/viewStudents.dart';
 
 class RcMainPage extends StatefulWidget{
@@ -58,6 +59,14 @@ class RcMainPageState extends State<RcMainPage>{
     },
     ),
     const SizedBox(height: 20),
+      const SizedBox(height: 20),
+      DashboardBox(
+        title: 'View Students Attendance',
+        onTap: () {
+          navigateToPage(context,ViewAttendance());
+        },
+      ),
+      const SizedBox(height: 20),
     ],
     ),
     ),

@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hostel_client/common/myWigdets.dart';
+import 'package:hostel_client/pages/android_app/view_circular_details.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ViewCicular extends StatefulWidget {
@@ -82,8 +83,8 @@ class _ViewCicularState extends State<ViewCicular> {
                                                     context,
                                                     MaterialPageRoute(
                                                       builder: (context) =>
-                                                          ViewStudentDetails(
-                                                              studentDetails: data),
+                                                          ViewCircularDetails(
+                                                              circularDetails: data),
                                                     ),
                                                   );
                                                 }

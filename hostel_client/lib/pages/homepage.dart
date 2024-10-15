@@ -57,33 +57,39 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const SizedBox(height: 20),
-                        DashboardBox(
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          const SizedBox(height: 20),
+                          DashboardBox(
                           title: 'Create Student',
                           onTap: () {
                             navigateToPage(context,const CreateStudent());
                           },
                         ),
+                          const SizedBox(height: 20,width: 50,),
+                          DashboardBox(
+                            title: 'View Students',
+                            onTap: () {
+                              navigateToPage(context,const ViewStudent());
+                            },
+                          ),]),
                         const SizedBox(height: 20),
-                        DashboardBox(
-                          title: 'View Students',
-                          onTap: () {
-                            navigateToPage(context,const ViewStudent());
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        DashboardBox(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [DashboardBox(
                           title: 'Create RC',
                           onTap: () {
                             navigateToPage(context,const CreateRC());
                           },
                         ),
-                        const SizedBox(height: 20),
-                        DashboardBox(
-                          title: 'Add Notification/Circular',
-                          onTap: () {
-                            navigateToPage(context,const Setnotification());
-                          },
-                        ),
+                          const SizedBox(height: 20,width: 50,),
+                          DashboardBox(
+                            title: 'Add Notification/Circular',
+                            onTap: () {
+                              navigateToPage(context,const Setnotification());
+                            },
+                          ),],),
                         const SizedBox(height: 20),
                       ],
                     ),

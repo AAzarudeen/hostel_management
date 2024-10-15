@@ -9,7 +9,10 @@ import 'package:hostel_client/common/dashboardBox.dart';
 import 'package:hostel_client/common/navigate.dart';
 import 'package:hostel_client/pages/android_app/ViewDetail.dart';
 import 'package:hostel_client/pages/android_app/app_login.dart';
+import 'package:hostel_client/pages/android_app/location_updater.dart';
 import 'package:hostel_client/pages/android_app/mess_reduction.dart';
+import 'package:hostel_client/pages/android_app/student_attendance.dart';
+import 'package:hostel_client/pages/android_app/view_circular.dart';
 
 class StudentDashboardPage extends StatefulWidget {
   final Map<String, dynamic>? student_details;
@@ -21,35 +24,39 @@ class StudentDashboardPage extends StatefulWidget {
 }
 
 class StudentDashboardPageState extends State<StudentDashboardPage> {
+  final LocationUpdater locationUpdater = LocationUpdater();
   bool status = false;
   bool isServiceRunning = false;
   final service = FlutterBackgroundService();
 
+
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .collection('status')
-        .doc('status_doc')
-        .snapshots()
-        .listen((DocumentSnapshot snapshot) {
-      setState(() {
-        // status = snapshot.data()?['status'];
-      });
-    });
-    if (DateTime.now().hour >= 21 || DateTime.now().hour < 5) {
-      // startBackgroundService();
-    }
+    // locationUpdater.startLocationUpdates(widget.student_details?['register']);
+    // locationUpdater.startLocationUpdates(stu);
+    // // FirebaseFirestore.instance
+    // //     .collection('status')
+    // //     .doc('status_doc')
+    // //     .snapshots()
+    // //     .listen((DocumentSnapshot snapshot) {
+    // //   setState(() {
+    // //     // status = snapshot.data()?['status'];
+    // //   });
+    // });
+    // if (DateTime.now().hour >= 21 || DateTime.now().hour < 5) {
+      startBackgroundService();
+    // }
   }
 
   onStart() {
-    Timer.periodic(Duration(seconds: 10), (timer) {
+    Timer.periodic(const Duration(seconds: 20), (timer) {
       updateLocation(timer);
     });
   }
 
   void startBackgroundService() async {
-    print("hi");
+    // print("hi");
     if (!(await service.isRunning())) {
       await service.startService();
       await service.configure(
@@ -61,9 +68,9 @@ class StudentDashboardPageState extends State<StudentDashboardPage> {
             // auto start service
             onStart: onStart(),
             isForegroundMode: false,
-            notificationChannelId: "notificationChannelId",
-            initialNotificationTitle: 'AWESOME SERVICE',
-            initialNotificationContent: 'Initializing',
+            // notificationChannelId: "notificationChannelId",
+            // initialNotificationTitle: 'AWESOME SERVICE',
+            // initialNotificationContent: 'Initializing',
           ));
       setState(() {
         isServiceRunning = true;
@@ -73,20 +80,20 @@ class StudentDashboardPageState extends State<StudentDashboardPage> {
 
   void updateLocation(timer) async {
     try {
-      if (DateTime.now().hour >= 21 || DateTime.now().hour < 5) {
+      // if (DateTime.now().hour >= 21 || DateTime.now().hour < 5) {
         await Geolocator.getCurrentPosition(
                 desiredAccuracy: LocationAccuracy.high)
             .then((value) => FirebaseFirestore.instance
                     .collection('locations')
-                    .doc('user_location')
+                    .doc(widget.student_details?['register'])
                     .set({
                   'latitude': value.latitude,
                   'longitude': value.longitude,
                   // Add more location data as needed
                 }));
-      } else {
-        timer.cancel();
-      }
+      // } else {
+      //   timer.cancel();
+      // }
     } catch (e) {
       print('Error getting location: $e');
     }
@@ -101,7 +108,7 @@ class StudentDashboardPageState extends State<StudentDashboardPage> {
         title: const Text("Dashboard"),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle),
             onPressed: () {
               navigateToPage(
                   context,
@@ -138,25 +145,25 @@ class StudentDashboardPageState extends State<StudentDashboardPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 20),
-                        DashboardBox(
-                          title: 'Apply Mess Reduction form',
-                          onTap: () {
-                            navigateToPage(context,const MessReduction());
-                          },
-                        ),
+                        // const SizedBox(height: 20),
+                        // DashboardBox(
+                        //   title: 'Apply Mess Reduction form',
+                        //   onTap: () {
+                        //     navigateToPage(context,const MessReduction());
+                        //   },
+                        // ),
                         const SizedBox(height: 20),
                         DashboardBox(
                           title: 'View Attendance',
                           onTap: () {
-                            navigateToPage(context,const MessReduction());
+                            navigateToPage(context, ViewStudentAttendance(rollNumber: widget.student_details?['register'] ));
                           },
                         ),
                         const SizedBox(height: 20),
                         DashboardBox(
                           title: 'Notifications/Circulars',
                           onTap: () {
-                            navigateToPage(context,const MessReduction());
+                            navigateToPage(context,const ViewCicular());
                           },
                         ),
                         const SizedBox(height: 20),

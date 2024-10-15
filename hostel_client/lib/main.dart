@@ -26,7 +26,6 @@ Future main() async {
     );
     runApp(const WebPages());
   } else {
-    print("Hello");
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );

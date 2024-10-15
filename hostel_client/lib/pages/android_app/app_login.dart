@@ -46,7 +46,7 @@ class _AppLoginPageState extends State<AppLoginPage> {
     if (userType == "parent") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MainPageParent()),
+        MaterialPageRoute(builder: (context) => MainPageParent(student_details: data)),
       );
     }
     if (userType == "RC") {
@@ -252,7 +252,7 @@ class _AppLoginPageState extends State<AppLoginPage> {
                         const SizedBox(height: 32.0),
                         ElevatedButton(
                           onPressed: () {
-                            checkEmailType("azarcrackzz@gmail.com", "9789291871",context);
+                            checkEmailType(_emailController.text, _passwordController.text,context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
